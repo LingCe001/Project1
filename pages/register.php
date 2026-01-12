@@ -1,14 +1,13 @@
 <?php
-include'../includes/header.inc.php';
+if (isset($_POST['username'])){
+  echo $_POST['username'];
+}
 ?>
-<?php
-include'../includes/navbar.inc.php';
-?>
-    <form class="col-lg-6 col-md-4 mx-auto">
+    <form method="post" action="./?page=register" class="col-lg-6 col-md-4 mx-auto">
         <h2>Register Page</h2>
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Email address</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+    <input name="username" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
     <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
   </div>
   <div class="mb-3">
@@ -25,6 +24,3 @@ include'../includes/navbar.inc.php';
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
-    <?php
-include'../includes/footer.icn.php';
-?>
