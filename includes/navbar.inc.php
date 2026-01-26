@@ -17,9 +17,9 @@
             Account User
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/WebApp_Ravy/pages/login.php">Login</a></li>
+            <li><a class="dropdown-item" href="?page=login">Login</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="/WebApp_Ravy/pages/register.php">Register</a></li>
+            <li><a class="dropdown-item" href="?pase=register">Register</a></li>
             <li><hr class="dropdown-divider"></li>
           </ul>
         </li>

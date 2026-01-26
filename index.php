@@ -1,4 +1,5 @@
 <?php
+require_once'./init/init.php';
 include'./includes/header.inc.php';
 include'./includes/navbar.inc.php';
 

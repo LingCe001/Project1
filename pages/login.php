@@ -1,4 +1,7 @@
-
+<?php
+include '../includes/header.inc.php';
+include '../includes/navbar.inc.php';
+?>
     <form class="col-lg-6 col-md-4 mx-auto">
         <h2>Login Page</h2>
   <div class="mb-3">
@@ -16,4 +19,6 @@
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
-  
+  <?php
+  include '../includes/footer.icn.php';
+  ?>
