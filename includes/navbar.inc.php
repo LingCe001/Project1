@@ -21,13 +21,13 @@
                     <ul class="dropdown-menu">
                         <?php if (empty($user)) { ?>
 
-                            <li><a class="dropdown-item" href="/webapp_AI01/?page=login">Login</a></li>
+                            <li><a class="dropdown-item" href="/WebApp_Ravy/?page=login">Login</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="/webapp_AI01/?page=register">Register</a></li>
+                            <li><a class="dropdown-item" href="/WebApp_Ravy/?page=register">Register</a></li>
                         <?php } else { ?>
-                            <li><a class="dropdown-item" href="/webapp_AI01/?page=logout">Logout</a></li>
+                            <li><a class="dropdown-item" href="/WebApp_Ravy/?page=logout">Logout</a></li>
 
                         <?php } ?>
 
