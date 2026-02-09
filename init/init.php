@@ -1,4 +1,5 @@
-<?php 
+<?php
+$baseurl = '/WebApp_Ravy/';
 // session_set_cookie_params(60*30);
 session_start();
 require_once './init/db.init.php';
