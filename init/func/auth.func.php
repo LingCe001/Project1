@@ -54,43 +54,44 @@ function loggedInUser()
     }
     return null;
 }
-function isAdmin(){
+function isAdmin()
+{
     $user_id = loggedInUser();
-    
+
     // Add debugging to see what's happening
     // error_log("User object: " . print_r($user_id, true));
-    
-    if($user_id && isset($user_id->level) && strtolower($user_id->level) === 'admin'){
+
+    if ($user_id && isset($user_id->level_user) && strtolower($user_id->level_user) === 'admin') {
         return true;
-    }    
+    }
     return false;
 }
 function isUserHasPassword($passwd)
 {
-global $db;
-$user = loggedInUser();
-$query = $db -> prepare(
-"SELECT * FROM tbl_users WHERE id = ? AND passwd = ?"
-);
-$query->bind_param('ss', $user->id_user, $passwd) ;
-$query->execute();
-$result = $query->get_result();
-if ($result->num_rows) {
-return true;
-}
-return false;
+    global $db;
+    $user = loggedInUser();
+    $query = $db->prepare(
+        "SELECT * FROM tbl_users WHERE id = ? AND passwd = ?"
+    );
+    $query->bind_param('ss', $user->id_user, $passwd);
+    $query->execute();
+    $result = $query->get_result();
+    if ($result->num_rows) {
+        return true;
+    }
+    return false;
 }
 function setUserNewPassowrd($passwd)
 {
-global $db;
-$user = loggedInUser();
-$query = $db->prepare(
-"UPDATE tbl_users SET passwd = ? WHERE id = ?"
-);
-$query->bind_param('ss', $passwd, $user->id_user);
-$query->execute();
-if ($db->affected_rows) {
-return true;
-}
-return false;
+    global $db;
+    $user = loggedInUser();
+    $query = $db->prepare(
+        "UPDATE tbl_users SET passwd = ? WHERE id = ?"
+    );
+    $query->bind_param('ss', $passwd, $user->id_user);
+    $query->execute();
+    if ($db->affected_rows) {
+        return true;
+    }
+    return false;
 }

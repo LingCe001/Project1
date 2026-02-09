@@ -5,9 +5,9 @@
 
     //echo 'LEVEL: ' . (isAdmin() ? 'admin' : 'user');
      if(isAdmin()){
-        echo 'LEVEL: ADMIN';
+        echo 'LEVEL_USER: ADMIN';
     }else {
-        echo 'LEVEL: USER';
+        echo 'LEVEL_USER: USER';
     }
 ?>
 
