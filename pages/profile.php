@@ -12,8 +12,7 @@ if (!$user) {
 $currentPhoto = getUserPhoto();
 
 $uploadMessage = '';
-
-// ─── HANDLE UPLOAD ────────────────────────────────────────────────
+//upload photo
 if (isset($_POST['uploadPhoto']) && !empty($_FILES['photo']['name'])) {
 
     $result = uploadUserPhoto($_FILES['photo']);
@@ -26,8 +25,7 @@ if (isset($_POST['uploadPhoto']) && !empty($_FILES['photo']['name'])) {
         $uploadMessage = '<div class="alert alert-danger">' . htmlspecialchars($result['message']) . '</div>';
     }
 }
-
-// ─── HANDLE DELETE ────────────────────────────────────────────────
+//delete photo
 if (isset($_POST['deletePhoto'])) {
 
     $result = deleteUserPhoto();
@@ -106,7 +104,7 @@ if (isset($_POST['changePasswd'], $_POST['oldPasswd'], $_POST['newPasswd'], $_PO
     </div>
 </div>
 
-<!-- JavaScript: Live Preview + Enable Upload Button -->
+<!--Live Preview + Enable Upload Button-->
 <script>
 document.getElementById('profileUpload').addEventListener('change', function(e) {
     const file = e.target.files[0];
