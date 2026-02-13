@@ -6,7 +6,7 @@ include './includes/navbar.inc.php';
 
 
 $available_pages = ['login', 'register', 'logout', 'dashboard', 'profile'];
-$logged_in_pages = ['dashboard','profile'];
+$logged_in_pages = ['dashboard', 'profile'];
 $non_logged_in_pages = ['login', 'register'];
 
 $page = '';

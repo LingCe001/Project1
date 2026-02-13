@@ -54,24 +54,22 @@ function loggedInUser()
     }
     return null;
 }
+
 function isAdmin()
 {
-    $user_id = loggedInUser();
-
-    // Add debugging to see what's happening
-    // error_log("User object: " . print_r($user_id, true));
-
-    if ($user_id && isset($user_id->level_user) && strtolower($user_id->level_user) === 'admin') {
+    $user = loggedInUser();
+    if ($user && $user->level_user === 'admin') {
         return true;
     }
     return false;
 }
+
 function isUserHasPassword($passwd)
 {
     global $db;
     $user = loggedInUser();
     $query = $db->prepare(
-        "SELECT * FROM tbl_users WHERE id = ? AND passwd = ?"
+        "SELECT * FROM tbl_users WHERE id_user = ? AND password_user = ?"
     );
     $query->bind_param('ss', $user->id_user, $passwd);
     $query->execute();
@@ -81,12 +79,13 @@ function isUserHasPassword($passwd)
     }
     return false;
 }
+
 function setUserNewPassowrd($passwd)
 {
     global $db;
     $user = loggedInUser();
     $query = $db->prepare(
-        "UPDATE tbl_users SET passwd = ? WHERE id = ?"
+        "UPDATE tbl_users SET password_user = ? WHERE id_user = ?"
     );
     $query->bind_param('ss', $passwd, $user->id_user);
     $query->execute();
@@ -94,4 +93,126 @@ function setUserNewPassowrd($passwd)
         return true;
     }
     return false;
+}
+function uploadUserPhoto($file)
+{
+    global $db;
+    $user = loggedInUser();
+
+    // Allowed file types
+    $allowed_types = array('image/jpg', 'image/jpeg', 'image/png');
+    $allowed_extensions = array('jpg', 'jpeg', 'png');
+
+    // Check if file is selected
+    if (!isset($file['name']) || $file['name'] == '') {
+        return array('success' => false, 'message' => 'No file selected for upload');
+    }
+
+    // Check file size
+    $max_size = 5 * 1024 * 1024;
+    if ($file['size'] > $max_size) {
+        return array('success' => false, 'message' => 'File size exceeds 5MB limit');
+    }
+
+    // Check MIME type
+    if (!in_array($file['type'], $allowed_types)) {
+        return array('success' => false, 'message' => 'Only JPG, JPEG, and PNG files are allowed');
+    }
+
+    // Check file extension
+    $file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (!in_array($file_ext, $allowed_extensions)) {
+        return array('success' => false, 'message' => 'Invalid file extension');
+    }
+
+    // Generate random filename
+    $random_name = bin2hex(random_bytes(8)) . '.' . $file_ext;
+    $upload_dir = __DIR__ . '/../../assets/images/';
+    $file_path = $upload_dir . $random_name;
+    $db_photo_path = './assets/images/' . $random_name;
+
+    // Create directory if it doesn't exist
+    if (!is_dir($upload_dir)) {
+        mkdir($upload_dir, 0755, true);
+    }
+
+    // Move uploaded file
+    if (!move_uploaded_file($file['tmp_name'], $file_path)) {
+        return array('success' => false, 'message' => 'Failed to upload file');
+    }
+
+    // Delete old photo if exists
+    $old_photo_query = $db->prepare('SELECT photo FROM tbl_users WHERE id_user = ?');
+    $old_photo_query->bind_param('s', $user->id_user);
+    $old_photo_query->execute();
+    $result = $old_photo_query->get_result();
+    if ($result->num_rows && $row = $result->fetch_assoc()) {
+        if ($row['photo']) {
+            // Extract filename from full path
+            $old_file = $upload_dir . basename($row['photo']);
+            if (file_exists($old_file)) {
+                unlink($old_file);
+            }
+        }
+    }
+
+    // Update database with new photo path (full path)
+    $query = $db->prepare('UPDATE tbl_users SET photo = ? WHERE id_user = ?');
+    $query->bind_param('ss', $db_photo_path, $user->id_user);
+    $query->execute();
+
+    if ($db->affected_rows) {
+        return array('success' => true, 'message' => 'Photo uploaded successfully', 'photo' => $db_photo_path);
+    } else {
+        unlink($file_path);
+        return array('success' => false, 'message' => 'Failed to save photo information');
+    }
+}
+function deleteUserPhoto()
+{
+    global $db;
+    $user = loggedInUser();
+
+    // Get current photo
+    $query = $db->prepare('SELECT photo FROM tbl_users WHERE id_user = ?');
+    $query->bind_param('s', $user->id_user);
+    $query->execute();
+    $result = $query->get_result();
+
+    if ($result->num_rows && $row = $result->fetch_assoc()) {
+        $photo = $row['photo'];
+        if ($photo) {
+            // Delete file from server - extract filename from full path
+            $upload_dir = __DIR__ . '/../../assets/images/';
+            $filename = basename($photo);
+            $file_path = $upload_dir . $filename;
+            if (file_exists($file_path)) {
+                unlink($file_path);
+            }
+
+            // Update database
+            $update_query = $db->prepare('UPDATE tbl_users SET photo = NULL WHERE id_user = ?');
+            $update_query->bind_param('d', $user->id_user);
+            $update_query->execute();
+
+            if ($db->affected_rows) {
+                return array('success' => true, 'message' => 'Photo deleted successfully');
+            } else {
+                return array('success' => false, 'message' => 'Failed to delete photo from database');
+            }
+        } else {
+            return array('success' => false, 'message' => 'No photo to delete');
+        }
+    }
+    return array('success' => false, 'message' => 'Error retrieving photo information');
+}
+
+
+function getUserPhoto()
+{
+    $user = loggedInUser();
+    if ($user && isset($user->photo) && $user->photo) {
+        return $user->photo;
+    }
+    return './assets/images/emptyuser.png';
 }
